@@ -24,6 +24,11 @@ vim.cmd [[
   augroup end
 ]]
 
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
 
@@ -64,11 +69,6 @@ require('packer').startup(function(use)
   use 'jose-elias-alvarez/null-ls.nvim'
   use 'jose-elias-alvarez/nvim-lsp-ts-utils'
 
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
-  use 'hrsh7th/nvim-cmp'
-
   use {
     'nvim-lualine/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true}
@@ -98,7 +98,84 @@ require('packer').startup(function(use)
 
   use 'jiangmiao/auto-pairs'
 
-  use 'L3MON4D3/LuaSnip'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
+
+  use {
+    "hrsh7th/nvim-cmp",
+    config = function()
+      local cmp = require("cmp")
+
+      cmp.setup {
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body) 
+          end,
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+        sources = cmp.config.sources {
+          { name = 'nvim_lsp' },
+          { name = "luasnip" },
+          { name = "path" },
+        }, {
+          { name = 'buffer' },
+        },
+        -- recommended configuration for <Tab> people:
+        mapping = {
+          ["<C-p>"] = cmp.mapping.select_prev_item(),
+          ["<C-n>"] = cmp.mapping.select_next_item(),
+          ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.close(),
+          ["<CR>"] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true,
+          },
+          -- ["<Tab>"] = cmp.mapping(function(fallback)
+          --   if cmp.visible() then
+          --     cmp.select_next_item()
+          --   elseif require("luasnip").expand_or_jumpable() then
+          --     require("luasnip").expand_or_jump()
+          --   elseif has_words_before() then
+          --     cmp.complete()
+          --   else
+          --     fallback()
+          --   end
+          -- end, { "i", "s" }),
+
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif require("luasnip").jumpable(-1) then
+              require("luasnip").jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+        }
+      }
+    end
+  }
+
+  use 'saadparwaiz1/cmp_luasnip'
+  use {
+    'L3MON4D3/LuaSnip',
+    after = "nvim-cmp",
+    config = function() require('config.snippets') end,
+  }
 
   -- Colorschemes
   use 'pbrisbin/vim-colors-off'
@@ -124,10 +201,40 @@ require('packer').startup(function(use)
 
   use "mattn/emmet-vim"
 
+  use "vim-test/vim-test"
+
+  use {
+    "akinsho/bufferline.nvim",
+    tag = "v2.*",
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      vim.opt.termguicolors = true
+      require("bufferline").setup{}
+    end,
+  }
+
+  use {
+    "glepnir/lspsaga.nvim",
+    branch = "main",
+    config = function()
+        local saga = require("lspsaga")
+
+        saga.init_lsp_saga({
+          -- your configuration
+        })
+    end,
+  }
+
+  use "vlime/vlime"
+
   if packer_bootstrap then
     require('packer').sync()
   end
 end)
+--}}}
+--Setup Snippets{{{
+vim.cmd [[
+]]
 --}}}
 -- Setup vimwiki{{{
 vim.g.vimwiki_global_ext = 0
@@ -467,32 +574,28 @@ require('lspconfig').gopls.setup {
   capabilities = capabilities,
   on_attach = on_attach,
 }
-require('lspconfig').zls.setup {
-  capabilities = capabilities,
-  on_attach = on_attach,
-}
-require('lspconfig').solargraph.setup {
-  capabilities = capabilities,
-  on_attach = on_attach,
-}
+-- require('lspconfig').solargraph.setup {
+--   capabilities = capabilities,
+--   on_attach = on_attach,
+-- }
 
 local null_ls = require("null-ls")
 null_ls.setup({
     sources = {
         null_ls.builtins.diagnostics.eslint,
-        null_ls.builtins.diagnostics.flake8.with({
-            prefer_local = ".venv/bin",
-        }),
-        null_ls.builtins.code_actions.eslint,
-        null_ls.builtins.formatting.prettier,
-        null_ls.builtins.formatting.standardrb,
+        -- null_ls.builtins.diagnostics.flake8.with({
+        --     prefer_local = ".venv/bin",
+        -- }),
+        -- null_ls.builtins.code_actions.eslint,
+        -- null_ls.builtins.formatting.prettier,
+        -- null_ls.builtins.formatting.standardrb,
         null_ls.builtins.formatting.black.with({
             extra_args = {"--fast"},
             prefer_local = ".venv/bin",
         }),
-        null_ls.builtins.formatting.isort.with({
-            prefer_local = ".venv/bin",
-        }),
+        -- null_ls.builtins.formatting.isort.with({
+        --     prefer_local = ".venv/bin",
+        -- }),
     },
     on_attach = function(client, bufnr)
       if client.supports_method("textDocument/formatting") then
@@ -562,54 +665,6 @@ require('lspconfig').tsserver.setup {
         vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", ":TSLspImportAll<CR>", {silent = true})
     end
 }
-
--- nvim-cmp setup
-local cmp = require 'cmp'
-cmp.setup {
-  snippet = {
-    -- REQUIRED - you must specify a snippet engine
-    expand = function(args)
-      require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-      -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-      -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-    end,
-  },
-  mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-    ['<C-y>'] = cmp.config.disable,
-    ['<Tab>'] = function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      else
-        fallback()
-      end
-    end,
-    ['<S-Tab>'] = function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      else
-        fallback()
-      end
-    end,
-  },
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  }, {
-    { name = 'buffer' },
-  })
-}
-
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
 -- cmp.setup.cmdline('/', {
 --   sources = {
@@ -707,3 +762,4 @@ vim.g.go_build_tags = "integration,unit"
 -- })
 
 --}}}
+
