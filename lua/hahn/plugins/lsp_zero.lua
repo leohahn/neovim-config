@@ -45,6 +45,16 @@ return {
           }
         })
 
+        lsp.configure("sumneko_lua", {
+            settings = {
+                Lua = {
+                    workspace = {
+                        checkThirdParty = false, -- THIS IS THE IMPORTANT LINE TO ADD
+                    },
+                },
+            },
+        })
+
         lsp.on_attach(function(client, bufnr)
             local fmt = function(cmd) return function(str) return cmd:format(str) end end
 
