@@ -1,7 +1,4 @@
 return {
-    -- Colorschemes
-    "EdenEast/nightfox.nvim",
-
     -- Basic functionalities needed by other plugins (not user facing)
     "nvim-lua/plenary.nvim",
 

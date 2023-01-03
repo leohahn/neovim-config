@@ -10,8 +10,7 @@ return {
             },
             -- delay: delay in milliseconds
             delay = 100,
-            -- filetype_overrides: filetype specific overrides.
-            -- The keys are strings to represent the filetype while the values are tables that
+            -- filetype_overrides: filetype specific overrides. The keys are strings to represent the filetype while the values are tables that
             -- supports the same keys passed to .configure except for filetypes_denylist and filetypes_allowlist
             filetype_overrides = {},
             -- filetypes_denylist: filetypes to not illuminate, this overrides filetypes_allowlist
@@ -49,6 +48,13 @@ return {
             -- min_count_to_highlight: minimum number of matches required to perform highlighting
             min_count_to_highlight = 1,
         })
+
+        -- Clear default highlight groups
+        vim.cmd [[
+            hi clear IlluminatedWordText
+            hi clear IlluminatedWordRead
+            hi clear IlluminatedWordWrite
+        ]]
     end,
     lazy = false,
 }
