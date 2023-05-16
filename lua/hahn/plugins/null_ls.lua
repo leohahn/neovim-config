@@ -9,6 +9,7 @@ return {
 				formatting.black.with({ extra_args = { "--fast" } }),
 				formatting.prettierd,
 				formatting.stylua,
+				formatting.golines,
 			},
 		})
 

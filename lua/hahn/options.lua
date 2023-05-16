@@ -44,3 +44,12 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
     end,
 })
 
+
+vim.cmd [[
+    autocmd BufNewFile,BufRead *.mjml setfiletype html
+]]
+vim.cmd [[
+    autocmd BufNewFile,BufRead *.postcss setfiletype css
+]]
+
+

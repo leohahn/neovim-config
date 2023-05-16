@@ -13,6 +13,7 @@ return {
         "saadparwaiz1/cmp_luasnip",
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-nvim-lua",
+        "zbirenbaum/copilot-cmp",
 
         -- Snippets
         "L3MON4D3/LuaSnip",
@@ -56,6 +57,8 @@ return {
         })
 
         lsp.on_attach(function(client, bufnr)
+            lsp.default_keymaps({buffer = bufnr})
+
             local fmt = function(cmd) return function(str) return cmd:format(str) end end
 
             local map = function(m, lhs, rhs)
@@ -63,7 +66,6 @@ return {
                 vim.api.nvim_buf_set_keymap(bufnr, m, lhs, rhs, opts)
             end
 
-            local lsp = fmt("<cmd>lua vim.lsp.%s<cr>")
             local diagnostic = fmt("<cmd>lua vim.diagnostic.%s<cr>")
             local telescope = fmt("<cmd>lua require('telescope.builtin').%s<cr>")
 
@@ -97,5 +99,44 @@ return {
         end)
 
         lsp.setup()
+
+        local cmp = require('cmp')
+        cmp.setup({
+            mapping = cmp.mapping.preset.insert({
+                ['<CR>'] = cmp.mapping.confirm({select = true, behavior = cmp.ConfirmBehavior.Replace}),
+                ['<C-d>'] = cmp.mapping.scroll_docs(4),
+                ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+                ['<C-y>'] = cmp.mapping.confirm({select = true, behavior = cmp.ConfirmBehavior.Replace}),
+                -- toggle completion
+                ['<C-e>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.abort()
+                    else
+                        cmp.complete()
+                    end
+                end),
+                ['<C-p>'] = cmp.mapping(function()
+                    if cmp.visible() then
+                        cmp.select_prev_item()
+                    else
+                        cmp.complete()
+                    end
+                end),
+                ['<C-n>'] = cmp.mapping(function()
+                    if cmp.visible() then
+                        cmp.select_next_item()
+                    else
+                        cmp.complete()
+                    end
+                end),
+            }),
+            sources = {
+                {name = 'copilot'},
+                {name = 'nvim_lsp'},
+                {name = 'path'},
+                {name = 'buffer', keyword_length = 3},
+                {name = 'luasnip', keyword_length = 2},
+            }
+        })
     end,
 }

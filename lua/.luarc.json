@@ -30,6 +30,7 @@
         "/Users/leonardo.hahn/.local/share/nvim/lazy/vim-matchup",
         "/Users/leonardo.hahn/.local/share/nvim/lazy/LuaSnip",
         "/Users/leonardo.hahn/.local/share/nvim/lazy/nvim-cmp",
-        "${3rd}/luassert/library"
+        "${3rd}/luassert/library",
+        "${3rd}/luv/library"
     ]
 }
