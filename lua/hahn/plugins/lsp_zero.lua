@@ -56,6 +56,14 @@ return {
             },
         })
 
+        lsp.configure("yamlls", {
+            settings = {
+                yaml = {
+                    keyOrdering = false
+                }
+            }
+        })
+
         lsp.on_attach(function(client, bufnr)
             lsp.default_keymaps({buffer = bufnr})
 

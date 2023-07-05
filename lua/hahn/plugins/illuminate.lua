@@ -1,5 +1,6 @@
 return {
     "RRethy/vim-illuminate",
+    dependencies = { "folke/tokyonight.nvim" },
     config = function()
         require("illuminate").configure({
             -- providers: provider used to get references in the buffer, ordered by priority
@@ -9,7 +10,7 @@ return {
                 "regex",
             },
             -- delay: delay in milliseconds
-            delay = 100,
+            delay = 200,
             -- filetype_overrides: filetype specific overrides. The keys are strings to represent the filetype while the values are tables that
             -- supports the same keys passed to .configure except for filetypes_denylist and filetypes_allowlist
             filetype_overrides = {},
@@ -48,13 +49,6 @@ return {
             -- min_count_to_highlight: minimum number of matches required to perform highlighting
             min_count_to_highlight = 1,
         })
-
-        -- Clear default highlight groups
-        vim.cmd [[
-            hi clear IlluminatedWordText
-            hi clear IlluminatedWordRead
-            hi clear IlluminatedWordWrite
-        ]]
     end,
     lazy = false,
 }

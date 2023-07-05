@@ -76,4 +76,14 @@ return {
         end,
         lazy = false,
     },
+
+    -- {
+    --     "svrana/neosolarized.nvim",
+    --     config = function()
+    --         require('neosolarized').setup({
+    --             comment_italics = true,
+    --             background_set = true,
+    --         })
+    --     end,
+    -- }
 }
