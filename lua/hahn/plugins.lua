@@ -9,8 +9,8 @@ return {
     { -- kill buffers without deleting the window as well
         "moll/vim-bbye",
         config = function()
-            vim.keymap.set("n", "<leader>bd", ":Bdelete<CR>", { noremap = true, silent = true})
-            vim.keymap.set("n", "<leader>bq", ":Bwipeout<CR>", { noremap = true, silent = true})
+            vim.keymap.set("n", "<leader>bd", ":Bdelete<CR>", { noremap = true, silent = true, desc = "Delete buffer" })
+            vim.keymap.set("n", "<leader>bq", ":Bwipeout<CR>", { noremap = true, silent = true, desc = "Wipeout buffer" })
         end,
         lazy = false,
     },
@@ -76,14 +76,4 @@ return {
         end,
         lazy = false,
     },
-
-    -- {
-    --     "svrana/neosolarized.nvim",
-    --     config = function()
-    --         require('neosolarized').setup({
-    --             comment_italics = true,
-    --             background_set = true,
-    --         })
-    --     end,
-    -- }
 }

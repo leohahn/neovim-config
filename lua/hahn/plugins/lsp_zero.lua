@@ -1,150 +1,125 @@
 return {
-    "VonHeikemen/lsp-zero.nvim",
-    dependencies = {
-        -- LSP Support
-        "neovim/nvim-lspconfig",
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
+	"VonHeikemen/lsp-zero.nvim",
+	branch = "v3.x",
+	dependencies = {
+		-- LSP Support
+		"neovim/nvim-lspconfig",
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
 
-        -- Autocompletion
-        "hrsh7th/nvim-cmp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "saadparwaiz1/cmp_luasnip",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-nvim-lua",
-        "zbirenbaum/copilot-cmp",
+		-- Autocompletion
+		"hrsh7th/nvim-cmp",
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
+		"saadparwaiz1/cmp_luasnip",
+		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-nvim-lua",
+		"zbirenbaum/copilot-cmp",
 
-        -- Snippets
-        "L3MON4D3/LuaSnip",
-        "rafamadriz/friendly-snippets",
+		-- Snippets
+		"L3MON4D3/LuaSnip",
+		"rafamadriz/friendly-snippets",
 
-        -- Neodev for better vim lua completions
-        "folke/neodev.nvim",
+		-- Neodev for better vim lua completions
+		"folke/neodev.nvim",
 
-        -- We depend on telescope for keymaps as well
-        "nvim-telescope/telescope.nvim",
-    },
-    config = function()
-        require("neodev").setup()
+		-- We depend on telescope for keymaps as well
+		"nvim-telescope/telescope.nvim",
+	},
+	config = function()
+		require("neodev").setup()
 
-        local lsp = require("lsp-zero")
+		local lsp_zero = require("lsp-zero")
+		local telescope_builtin = require("telescope.builtin")
 
-        lsp.set_preferences({
-          suggest_lsp_servers = true,
-          setup_servers_on_start = true,
-          set_lsp_keymaps = false,
-          configure_diagnostics = true,
-          cmp_capabilities = true,
-          manage_nvim_cmp = true,
-          call_servers = 'local',
-          sign_icons = {
-            error = '✘',
-            warn = '▲',
-            hint = '⚑',
-            info = ''
-          }
-        })
+		lsp_zero.on_attach(function(client, bufnr)
+			local opts = { buffer = bufnr, remap = false }
 
-        lsp.configure("sumneko_lua", {
-            settings = {
-                Lua = {
-                    workspace = {
-                        checkThirdParty = false, -- THIS IS THE IMPORTANT LINE TO ADD
-                    },
-                },
-            },
-        })
+			vim.keymap.set("n", "gd", function()
+				vim.lsp.buf.definition()
+			end, opts)
+			vim.keymap.set("n", "K", function()
+				vim.lsp.buf.hover()
+			end, opts)
+			vim.keymap.set("n", "<leader>cws", function()
+				vim.lsp.buf.workspace_symbol()
+			end, opts)
+			vim.keymap.set("n", "<leader>cd", function()
+				vim.diagnostic.open_float()
+			end, opts)
+			vim.keymap.set("n", "[d", function()
+				vim.diagnostic.goto_next()
+			end, opts)
+			vim.keymap.set("n", "]d", function()
+				vim.diagnostic.goto_prev()
+			end, opts)
+			vim.keymap.set("n", "<leader>ca", function()
+				vim.lsp.buf.code_action()
+			end, opts)
+			vim.keymap.set("n", "gr", function()
+				telescope_builtin.lsp_references()
+			end, opts)
+			vim.keymap.set("n", "<leader>cr", function()
+				vim.lsp.buf.rename()
+			end, opts)
+			vim.keymap.set("i", "<C-h>", function()
+				vim.lsp.buf.signature_help()
+			end, opts)
+		end)
 
-        lsp.configure("yamlls", {
-            settings = {
-                yaml = {
-                    keyOrdering = false
-                }
-            }
-        })
+		require("mason").setup({})
+		require("mason-lspconfig").setup({
+			ensure_installed = { "tsserver", "rust_analyzer", "pyright" },
+			handlers = {
+				lsp_zero.default_setup,
+				lua_ls = function()
+					local lua_opts = lsp_zero.nvim_lua_ls()
+					require("lspconfig").lua_ls.setup(lua_opts)
+				end,
+			},
+		})
 
-        lsp.on_attach(function(client, bufnr)
-            lsp.default_keymaps({buffer = bufnr})
+		-- lsp_zero.configure("sumneko_lua", {
+		--     settings = {
+		--         Lua = {
+		--             workspace = {
+		--                 checkThirdParty = false, -- THIS IS THE IMPORTANT LINE TO ADD
+		--             },
+		--         },
+		--     },
+		-- })
+		--
+		-- lsp_zero.configure("yamlls", {
+		--     settings = {
+		--         yaml = {
+		--             keyOrdering = false
+		--         }
+		--     }
+		-- })
 
-            local fmt = function(cmd) return function(str) return cmd:format(str) end end
+		-- lsp_zero.setup()
 
-            local map = function(m, lhs, rhs)
-                local opts = {noremap = true, silent = true}
-                vim.api.nvim_buf_set_keymap(bufnr, m, lhs, rhs, opts)
-            end
+		local cmp = require("cmp")
+		local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
-            local diagnostic = fmt("<cmd>lua vim.diagnostic.%s<cr>")
-            local telescope = fmt("<cmd>lua require('telescope.builtin').%s<cr>")
-
-            map("n", "K", lsp "buf.hover()")
-
-            -- map("n", "gd", lsp "buf.definition()")
-            map("n", "gd", telescope "lsp_definitions()")
-
-            map("n", "gD", lsp "buf.declaration()")
-
-            -- map("n", "gi", lsp "buf.implementation()")
-            map("n", "gi", telescope "lsp_implementations()")
-
-            -- map("n", "go", lsp "buf.type_definition()")
-            map("n", "go", telescope "lsp_type_definitions()")
-
-            map("n", "gr", telescope "lsp_references()")
-            -- map('n', 'gr', lsp 'buf.references()')
-
-            map("n", "<F2>", lsp "buf.rename()")
-            map("n", "<F4>", lsp "buf.code_action()")
-            map("x", "<F4>", lsp "buf.range_code_action()")
-
-            -- if state.map_ctrlk then
-            --     map("n", "<C-k>", lsp "buf.signature_help()")
-            -- end
-
-            map("n", "gl", diagnostic "open_float()")
-            map("n", "[d", diagnostic "goto_prev()")
-            map("n", "]d", diagnostic "goto_next()")
-        end)
-
-        lsp.setup()
-
-        local cmp = require('cmp')
-        cmp.setup({
-            mapping = cmp.mapping.preset.insert({
-                ['<CR>'] = cmp.mapping.confirm({select = true, behavior = cmp.ConfirmBehavior.Replace}),
-                ['<C-d>'] = cmp.mapping.scroll_docs(4),
-                ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-                ['<C-y>'] = cmp.mapping.confirm({select = true, behavior = cmp.ConfirmBehavior.Replace}),
-                -- toggle completion
-                ['<C-e>'] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.abort()
-                    else
-                        cmp.complete()
-                    end
-                end),
-                ['<C-p>'] = cmp.mapping(function()
-                    if cmp.visible() then
-                        cmp.select_prev_item()
-                    else
-                        cmp.complete()
-                    end
-                end),
-                ['<C-n>'] = cmp.mapping(function()
-                    if cmp.visible() then
-                        cmp.select_next_item()
-                    else
-                        cmp.complete()
-                    end
-                end),
-            }),
-            sources = {
-                {name = 'copilot'},
-                {name = 'nvim_lsp'},
-                {name = 'path'},
-                {name = 'buffer', keyword_length = 3},
-                {name = 'luasnip', keyword_length = 2},
-            }
-        })
-    end,
+		cmp.setup({
+			sources = {
+				{ name = "path" },
+				{ name = "nvim_lsp" },
+				{ name = "copilot" },
+				{ name = "luasnip", keyword_length = 2 },
+				{ name = "buffer", keyword_length = 3 },
+			},
+			formatting = lsp_zero.cmp_format(),
+			mapping = cmp.mapping.preset.insert({
+				["<CR>"] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+				["<C-d>"] = cmp.mapping.scroll_docs(4),
+				["<C-u>"] = cmp.mapping.scroll_docs(-4),
+				["<C-y>"] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+				["<C-Space>"] = cmp.mapping.complete(),
+				["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
+				["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
+			}),
+		})
+	end,
 }

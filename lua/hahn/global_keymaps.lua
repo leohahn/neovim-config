@@ -1,8 +1,7 @@
-local opts = { noremap = true, silent = true }
 local set_keymap = vim.api.nvim_set_keymap
 
 -- Map space as a leader
-set_keymap("n", "<Space>", "<Nop>", opts)
+set_keymap("n", "<Space>", "<Nop>", { noremap = true, silent = true })
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -15,36 +14,36 @@ vim.g.maplocalleader = " "
 --   command "c"
 
 -- Saving buffers
-set_keymap("n", "<leader>fs", ":w<CR>", opts)
+set_keymap("n", "<leader>fs", ":w<CR>", { noremap = true, silent = true, desc = "Save buffer" })
 
 -- Faster than using esc to exit insert mode
-set_keymap("i", "kj", "<ESC>", opts)
-set_keymap("i", "jk", "<ESC>", opts)
+set_keymap("i", "kj", "<ESC>", { noremap = true, silent = true })
+set_keymap("i", "jk", "<ESC>", { noremap = true, silent = true })
 
 -- Quickly manipulate window splits
-set_keymap("n", "<leader>wv", ":vsplit<CR>", opts)
-set_keymap("n", "<leader>ws", ":split<CR>", opts)
-set_keymap("n", "<leader>wd", ":close<CR>", opts)
-set_keymap("n", "<leader>wm", ":only<CR>", opts)
+set_keymap("n", "<leader>wv", ":vsplit<CR>", { noremap = true, silent = true, desc = "Open vertical split window" })
+set_keymap("n", "<leader>ws", ":split<CR>", { noremap = true, silent = true, desc = "Open horizontal split window" })
+set_keymap("n", "<leader>wd", ":close<CR>", { noremap = true, silent = true, desc = "Close window" })
+set_keymap("n", "<leader>wm", ":only<CR>", { noremap = true, silent = true, desc = "Maximize window" })
 
 -- Manipulate buffers
-set_keymap("n", "<leader><TAB>", ":e #<CR>", opts) -- switch to previous buffer
+set_keymap("n", "<leader><TAB>", ":e #<CR>", { noremap = true, silent = true, desc = "Previous buffer" }) -- switch to previous buffer
 
 -- Stay in indent mode
---set_keymap("v", "<", "<gv", opts)
---set_keymap("v", ">", ">gv", opts)
+--set_keymap("v", "<", "<gv", { noremap = true, silent = true })
+--set_keymap("v", ">", ">gv", { noremap = true, silent = true })
 
 -- Replace on top of another selection without yanking the selection
-set_keymap("v", "p", '"_dP', opts)
+set_keymap("v", "p", '"_dP', { noremap = true, silent = true })
 
 -- Move text up and down
--- set_keymap("n", "<C-k>", ":m .-2<CR>==", opts)
--- set_keymap("n", "<C-j>", ":m .+1<CR>==", opts)
-set_keymap("i", "<C-j>", "<Esc>:m .+1<CR>==gi", opts)
-set_keymap("i", "<C-k>", "<Esc>:m .-2<CR>==gi", opts)
-set_keymap("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
-set_keymap("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)
+-- set_keymap("n", "<C-k>", ":m .-2<CR>==", { noremap = true, silent = true })
+-- set_keymap("n", "<C-j>", ":m .+1<CR>==", { noremap = true, silent = true })
+set_keymap("i", "<C-j>", "<Esc>:m .+1<CR>==gi", { noremap = true, silent = true })
+set_keymap("i", "<C-k>", "<Esc>:m .-2<CR>==gi", { noremap = true, silent = true })
+set_keymap("v", "<C-j>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+set_keymap("v", "<C-k>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
 -- Clear search highlight
-set_keymap("n", "<C-L>", ":noh<CR>", opts)
+set_keymap("n", "<C-L>", ":noh<CR>", { noremap = true, silent = true, desc = "Clear search highlights" })
 
