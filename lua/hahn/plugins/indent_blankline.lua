@@ -1,51 +1,41 @@
 return {
     "lukas-reineke/indent-blankline.nvim",
-    event = "BufReadPre",
+    main = "ibl",
+    opts = {},
     config = function()
-        local indent = require("indent_blankline")
-
-        -- PERF: debounce indent-blankline refresh
-        -- Disable, throttle, since it was caused by comment TS
-        -- local refresh = indent.refresh
-        -- indent.refresh = require("util").debounce(100, refresh)
+        local indent = require("ibl")
 
         indent.setup({
-            buftype_exclude = { "terminal", "nofile" },
-            filetype_exclude = {
-                "help",
-                "startify",
-                "dashboard",
-                "packer",
-                "neogitstatus",
-                "NvimTree",
-                "neo-tree",
-                "Trouble",
+            exclude = {
+                filetypes = {
+                    "lspinfo",
+                    "packer",
+                    "checkhealth",
+                    "help",
+                    "man",
+                    "gitcommit",
+                    "TelescopePrompt",
+                    "TelescopeResults",
+                    "",
+                    "startify",
+                    "dashboard",
+                    "neogitstatus",
+                    "NvimTree",
+                    "neo-tree",
+                    "Trouble",
+                },
+                buftypes = {
+                    "terminal",
+                    "nofile",
+                    "quickfix",
+                    "prompt",
+                },
             },
-            char = "│",
-            use_treesitter_scope = false,
-            show_trailing_blankline_indent = false,
-            --[[ show_current_context = true, ]]
-            context_patterns = {
-                "class",
-                "return",
-                "function",
-                "method",
-                "^if",
-                "^while",
-                "jsx_element",
-                "^for",
-                "^object",
-                "^table",
-                "block",
-                "arguments",
-                "if_statement",
-                "else_clause",
-                "jsx_element",
-                "jsx_self_closing_element",
-                "try_statement",
-                "catch_clause",
-                "import_statement",
-                "operation_type",
+            indent = {
+                char = { "│" }
+            },
+            scope = {
+                enabled = true,
             },
         })
     end,
