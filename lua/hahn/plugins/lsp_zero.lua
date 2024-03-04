@@ -50,6 +50,9 @@ return {
 			vim.keymap.set("n", "<leader>cd", function()
 				vim.diagnostic.open_float()
 			end, opts)
+			vim.keymap.set("n", "<leader>q", function()
+				vim.diagnostic.setloclist()
+			end, opts)
 			vim.keymap.set("n", "[d", function()
 				vim.diagnostic.goto_prev()
 			end, opts)
@@ -70,9 +73,11 @@ return {
 			end, opts)
 		end)
 
-		require("mason").setup({})
+		require("mason").setup({
+			PATH = "append",
+		})
 		require("mason-lspconfig").setup({
-			ensure_installed = { "tsserver", "rust_analyzer", "pyright" },
+			ensure_installed = { "tsserver", "rust_analyzer", "pyright@1.1.325" },
 			handlers = {
 				lsp_zero.default_setup,
 				lua_ls = function()
