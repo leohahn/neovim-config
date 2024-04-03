@@ -29,7 +29,7 @@ return {
             vim.keymap.set("n", "<C-s>k", ":<C-U>TmuxNavigateUp<CR>", { noremap = true, silent = true })
             vim.keymap.set("n", "<C-s>l", ":<C-U>TmuxNavigateRight<CR>", { noremap = true, silent = true })
         end,
-        keys = { "<C-s>h", "<C-s>j", "<C-s>k", "<C-s>l" },
+        lazy = false,
     },
 
     -- Startup screen for neovim

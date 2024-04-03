@@ -87,6 +87,13 @@ return {
 			},
 		})
 
+		require("lspconfig").clangd.setup {
+			cmd = {
+				"clangd",
+				"--offset-encoding=utf-16",
+			},
+		}
+
 		-- lsp_zero.configure("sumneko_lua", {
 		--     settings = {
 		--         Lua = {
