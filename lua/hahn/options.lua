@@ -51,5 +51,3 @@ vim.cmd [[
 vim.cmd [[
     autocmd BufNewFile,BufRead *.postcss setfiletype css
 ]]
-
-
