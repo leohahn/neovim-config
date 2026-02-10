@@ -23,6 +23,14 @@ vim.g.maplocalleader = ","
 
 vim.cmd.colorscheme("habamax")
 
+-- Search settings
+vim.opt.incsearch = true   -- Incremental search
+vim.opt.ignorecase = true  -- Case-insensitive search
+vim.opt.smartcase = true   -- Override ignorecase when search has uppercase
+
+-- Clear search highlights with Esc in normal mode
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+
 vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>w-", "<C-w>s", { desc = "Split window horizontally" })
 
