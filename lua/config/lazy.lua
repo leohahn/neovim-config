@@ -43,6 +43,7 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highl
 
 vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>w-", "<C-w>s", { desc = "Split window horizontally" })
+vim.keymap.set("n", "<leader>wd", "<C-w>c", { desc = "Delete current window" })
 
 -- Setup lazy.nvim
 require("lazy").setup({

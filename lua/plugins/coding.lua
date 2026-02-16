@@ -39,6 +39,44 @@ return {
 
   { "nvim-mini/mini.icons", version = false },
 
+  {
+    "saghen/blink.cmp",
+    -- optional: provides snippets for the snippet source
+    dependencies = { "rafamadriz/friendly-snippets" },
+
+    -- use a release tag to download pre-built binaries
+    version = "1.*",
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+      -- 'super-tab' for mappings similar to vscode (tab to accept)
+      -- 'enter' for enter to accept
+      -- 'none' for no mappings
+      keymap = { preset = "super-tab" },
+
+      appearance = {
+        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = "mono",
+      },
+
+      -- (Default) Only show the documentation popup when manually triggered
+      completion = { documentation = { auto_show = false } },
+
+      -- Default list of enabled providers defined so that you can extend it
+      -- elsewhere in your config, without redefining it, due to `opts_extend`
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+
+      -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+      fuzzy = { implementation = "prefer_rust_with_warning" },
+    },
+    opts_extend = { "sources.default" },
+  },
+
   -- Auto pairs
   -- Automatically inserts a matching closing character
   -- when you type an opening character like `"`, `[`, or `(`.
@@ -91,27 +129,27 @@ return {
       local ai = require("mini.ai")
       return {
         n_lines = 500,
-        custom_textobjects = {
-          o = ai.gen_spec.treesitter({ -- code block
-            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
-            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
-          }),
-          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }), -- function
-          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }), -- class
-          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" }, -- tags
-          d = { "%f[%d]%d+" }, -- digits
-          e = { -- Word with case
-            { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
-            "^().*()$",
-          },
-          -- g = LazyVim.mini.ai_buffer, -- buffer
-          u = ai.gen_spec.function_call(), -- u for "Usage"
-          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
-        },
+        -- custom_textobjects = {
+        --   o = ai.gen_spec.treesitter({ -- code block
+        --     a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+        --     i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+        --   }),
+        --   f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }), -- function
+        --   c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }), -- class
+        --   t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" }, -- tags
+        --   d = { "%f[%d]%d+" }, -- digits
+        --   e = { -- Word with case
+        --     { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
+        --     "^().*()$",
+        --   },
+        --   -- g = LazyVim.mini.ai_buffer, -- buffer
+        --   u = ai.gen_spec.function_call(), -- u for "Usage"
+        --   U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
+        -- },
       }
     end,
-    config = function(_, opts)
-      require("mini.ai").setup(opts)
-    end,
+    -- config = function(_, opts)
+    --   require("mini.ai").setup(opts)
+    -- end,
   },
 }

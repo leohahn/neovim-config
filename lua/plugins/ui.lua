@@ -1,5 +1,19 @@
 return {
   {
+    "nvim-mini/mini.starter",
+    version = false,
+    lazy = false,
+    opts = {},
+  },
+
+  {
+    "nvim-mini/mini.indentscope",
+    version = false,
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
+  },
+
+  {
     "nvim-lualine/lualine.nvim",
     event = "VimEnter",
     init = function()
