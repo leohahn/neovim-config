@@ -28,6 +28,16 @@ vim.opt.incsearch = true   -- Incremental search
 vim.opt.ignorecase = true  -- Case-insensitive search
 vim.opt.smartcase = true   -- Override ignorecase when search has uppercase
 
+-- Indentation settings
+vim.opt.expandtab = true   -- Use spaces instead of tabs
+vim.opt.tabstop = 2        -- Number of spaces tabs count for
+vim.opt.shiftwidth = 2     -- Size of an indent
+vim.opt.softtabstop = 2    -- Spaces inserted/deleted by <Tab>/<BS>
+
+-- Line number settings
+vim.opt.number = true
+vim.opt.relativenumber = true
+
 -- Clear search highlights with Esc in normal mode
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
 

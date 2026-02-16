@@ -1,10 +1,50 @@
 return {
+  { 
+    "nvim-mini/mini.basics",
+    version = false,
+    opts = {
+      -- Options. Set field to `false` to disable.
+      options = {
+        -- Basic options ('number', 'ignorecase', and many more)
+        basic = true,
+        -- Extra UI features ('winblend', 'listchars', 'pumheight', ...)
+        extra_ui = false,
+        -- Presets for window borders ('single', 'double', ...)
+        -- Default 'auto' infers from 'winborder' option
+        win_borders = 'auto',
+      },
+      -- Mappings. Set field to `false` to disable.
+      mappings = {
+        -- Basic mappings (better 'jk', save with Ctrl+S, ...)
+        basic = true,
+        -- Prefix for mappings that toggle common options ('wrap', 'spell', ...).
+        -- Supply empty string to not create these mappings.
+        option_toggle_prefix = [[\]],
+        -- Window navigation with <C-hjkl>, resize with <C-arrow>
+        windows = false,
+        -- Move cursor in Insert, Command, and Terminal mode with <M-hjkl>
+        move_with_alt = false,
+      },
+      -- Autocommands. Set field to `false` to disable
+      autocommands = {
+        -- Basic autocommands (highlight on yank, start Insert in terminal, ...)
+        basic = true,
+        -- Set 'relativenumber' only in linewise and blockwise Visual mode
+        relnum_in_visual_mode = false,
+      },
+      -- Whether to disable showing non-error feedback
+      silent = false,
+    }
+  },
+
+  { "nvim-mini/mini.icons", version = false },
+
   -- Auto pairs
   -- Automatically inserts a matching closing character
   -- when you type an opening character like `"`, `[`, or `(`.
   {
     "nvim-mini/mini.pairs",
-    event = "VeryLazy",
+    event = { "InsertCharPre" },
     opts = {
       modes = { insert = true, command = true, terminal = false },
       -- skip autopair when next character is one of these
@@ -16,9 +56,20 @@ return {
       skip_unbalanced = true,
       -- better deal with markdown code blocks
       markdown = true,
+      mappings = {
+        ['('] = { action = 'open', pair = '()', neigh_pattern = '^[^\\]' },
+        ['['] = { action = 'open', pair = '[]', neigh_pattern = '^[^\\]' },
+        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '^[^\\]' },
+
+        [')'] = { action = 'close', pair = '()', neigh_pattern = '^[^\\]' },
+        [']'] = { action = 'close', pair = '[]', neigh_pattern = '^[^\\]' },
+        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '^[^\\]' },
+
+        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '^[^\\]',   register = { cr = false } },
+        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '^[^%a\\]', register = { cr = false } },
+        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '^[^\\]',   register = { cr = false } },
+      },
     },
-    config = function(_, opts)
-    end,
   },
 
   -- Improves comment syntax, lets Neovim handle multiple
@@ -26,7 +77,7 @@ return {
   -- for uncommenting.
   {
     "folke/ts-comments.nvim",
-    event = "VeryLazy",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {},
   },
 
@@ -35,7 +86,7 @@ return {
   -- repeat those selections to select an outer text object.
   {
     "nvim-mini/mini.ai",
-    event = "VeryLazy",
+    event = { "BufReadPost", "BufNewFile" },
     opts = function()
       local ai = require("mini.ai")
       return {
