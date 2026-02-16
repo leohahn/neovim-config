@@ -39,6 +39,47 @@ return {
     },
   },
   {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    cmd = {
+      "NvimTreeToggle",
+      "NvimTreeFocus",
+      "NvimTreeFindFile",
+    },
+    keys = {
+      {
+        "<leader>ft",
+        "<cmd>NvimTreeToggle<CR>",
+        desc = "Toggle file tree",
+      },
+      {
+        "<leader>fe",
+        "<cmd>NvimTreeFindFile<CR>",
+        desc = "Reveal current file in tree",
+      },
+    },
+    opts = {
+      sort = {
+        sorter = "case_sensitive",
+      },
+      view = {
+        width = 35,
+      },
+      renderer = {
+        group_empty = true,
+      },
+      filters = {
+        dotfiles = false,
+      },
+      update_focused_file = {
+        enable = true,
+        update_root = true,
+      },
+    },
+  },
+  {
     "christoomey/vim-tmux-navigator",
     init = function()
       vim.g.tmux_navigator_no_mappings = 1
