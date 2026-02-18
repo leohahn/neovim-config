@@ -40,6 +40,21 @@ return {
   { "nvim-mini/mini.icons", version = false },
 
   {
+    "nvim-mini/mini.bufremove",
+    version = false,
+    opts = {},
+    keys = {
+      {
+        "<leader>bd",
+        function()
+          require("mini.bufremove").delete(0, false)
+        end,
+        desc = "Delete Buffer",
+      },
+    },
+  },
+
+  {
     "saghen/blink.cmp",
     -- optional: provides snippets for the snippet source
     dependencies = { "rafamadriz/friendly-snippets" },

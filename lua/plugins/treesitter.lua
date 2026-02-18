@@ -29,8 +29,6 @@ return {
         "json",
         "lua",
         "luadoc",
-        "markdown",
-        "markdown_inline",
         "python",
         "query",
         "regex",
